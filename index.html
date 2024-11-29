@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>bsky pathfinder :3</title>
+	</head>
+	<body>
+		<div id="app">
+			<h1>bsky pathfinder</h1>
+			<div id="unauthorized">
+				<label for="handle">your bsky handle:</label>
+				<input type="text" placeholder="wii.mom" id="handle" />
+				<button id="authorize">authorize that bitch!!!!</button>
+			</div>
+			<div id="authorized" style="display: none">
+				<p>hey <span id="authorized-did"></span>, you're authorized</p>
+				<button id="logout">log me out. NOW!!!!</button>
+			</div>
+		</div>
+		<script type="module" src="/src/main.js"></script>
+	</body>
+</html>
