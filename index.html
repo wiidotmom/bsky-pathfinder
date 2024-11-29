@@ -11,12 +11,24 @@
 			<h1>bsky pathfinder</h1>
 			<div id="unauthorized">
 				<label for="handle">your bsky handle:</label>
-				<input type="text" placeholder="wii.mom" id="handle" />
-				<button id="authorize">authorize that bitch!!!!</button>
+				<input type="text" placeholder="wii.mom" id="authorize-handle" />
+				<button id="authorize-go">authorize me!!!!</button>
 			</div>
 			<div id="authorized" style="display: none">
-				<p>hey <span id="authorized-did"></span>, you're authorized</p>
+				<p>hey at://<span id="authorized-did"></span>, you're authorized</p>
 				<button id="logout">log me out. NOW!!!!</button>
+				<p>
+					find me a path from
+					<input type="text" placeholder="wii.mom" id="path-from" /> to
+					<input
+						type="text"
+						placeholder="test-account.farlands.cafe"
+						id="path-to"
+					/>
+					<button id="path-go">GO!!!</button>
+				</p>
+				<p><span id="path-edges">0</span> social graph edges observed</p>
+				<p id="path-output"></p>
 			</div>
 		</div>
 		<script type="module" src="/src/main.js"></script>

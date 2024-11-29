@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@atcute/client": "^2.0.6",
-    "@atcute/oauth-browser-client": "^1.0.6"
+    "@atcute/oauth-browser-client": "^1.0.6",
+    "lexicons": "link:@atcute/bluesky/lexicons"
   }
 }

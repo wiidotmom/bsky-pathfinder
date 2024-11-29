@@ -14,6 +14,9 @@ importers:
       '@atcute/oauth-browser-client':
         specifier: ^1.0.6
         version: 1.0.6
+      lexicons:
+        specifier: link:@atcute/bluesky/lexicons
+        version: link:@atcute/bluesky/lexicons
     devDependencies:
       vite:
         specifier: ^6.0.1
