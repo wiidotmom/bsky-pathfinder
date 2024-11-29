@@ -1,6 +1,6 @@
 {
 	"client_id": "https://wii.nekoweb.org/bsky-pathfinder/oauth/client-metadata.json",
-	"application_type": "native",
+	"application_type": "web",
 	"client_name": "bsky pathfinder",
 	"client_uri": "https://wii.nekoweb.org/bsky-pathfinder",
 	"dpop_bound_access_tokens": true,
