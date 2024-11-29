@@ -14,6 +14,8 @@ const rpc = new XRPC({ handler });
 
 let didToHandle: { [key: At.DID]: string } = {};
 
+let network_requests = 0;
+
 async function getFollows(actor: At.DID) {
 	let follows: At.DID[] = [];
 	let prev_fetched = 100;
@@ -30,6 +32,10 @@ async function getFollows(actor: At.DID) {
 				},
 			}
 		);
+		network_requests++;
+		(
+			document.querySelector("#path-reqs") as HTMLSpanElement
+		).textContent = `${network_requests}`;
 
 		data.follows.forEach((x) => {
 			follows.push(x.did);
@@ -58,6 +64,11 @@ async function getFollowers(actor: At.DID) {
 					cursor: cursor ? cursor : undefined,
 				},
 			});
+
+		network_requests++;
+		(
+			document.querySelector("#path-reqs") as HTMLSpanElement
+		).textContent = `${network_requests}`;
 
 		data.followers.forEach((x) => {
 			followers.push(x.did);
@@ -93,6 +104,9 @@ async function bidirectionalSearch(
 				queueStart.push(neighbor);
 				visitedStart.add(neighbor);
 				edges.add(`${currentStart}$${neighbor}`);
+				(
+					document.querySelector("#path-edges") as HTMLSpanElement
+				).textContent = `${edges.size}`;
 			}
 			if (visitedEnd.has(neighbor)) {
 				return edges;
@@ -104,12 +118,14 @@ async function bidirectionalSearch(
 				queueEnd.push(neighbor);
 				visitedEnd.add(neighbor);
 				edges.add(`${neighbor}$${currentEnd}`);
+				(
+					document.querySelector("#path-edges") as HTMLSpanElement
+				).textContent = `${edges.size}`;
 			}
 			if (visitedStart.has(neighbor)) {
 				return edges;
 			}
 		}
-		document.querySelector("#path-edges")!.textContent = `${edges.size}`;
 	}
 
 	return new Set();
@@ -140,12 +156,43 @@ async function bfs(edges: Set<SocialEdge>, s: At.DID, t: At.DID) {
 				}
 				path.push(u);
 				path.reverse();
-				document.querySelector("#path-output")!.innerHTML = path
-					.map(
-						(did) =>
-							`<a href="web+at://${didToHandle[did]}">at://${didToHandle[did]}</a>`
-					)
-					.join(" -> ");
+				const format_type = (
+					document.querySelector("#display-format-at")! as HTMLInputElement
+				).checked
+					? "web+at"
+					: (
+							document.querySelector(
+								"#display-format-https"
+							)! as HTMLInputElement
+					  ).checked
+					? "https"
+					: "none";
+				switch (format_type) {
+					case "web+at": {
+						document.querySelector("#path-output")!.innerHTML = path
+							.map(
+								(did) =>
+									`<a target="_blank" href="web+at://${didToHandle[did]}">at://${didToHandle[did]}</a>`
+							)
+							.join(" -> ");
+						break;
+					}
+					case "https": {
+						document.querySelector("#path-output")!.innerHTML = path
+							.map(
+								(did) =>
+									`<a target="_blank" href="https://bsky.app/profile/${didToHandle[did]}">@${didToHandle[did]}</a>`
+							)
+							.join(" -> ");
+						break;
+					}
+					default: {
+						document.querySelector("#path-output")!.innerHTML = path
+							.map((did) => `@${didToHandle[did]}`)
+							.join(" -> ");
+						break;
+					}
+				}
 				return;
 			}
 			prev[v] = u;
@@ -155,6 +202,12 @@ async function bfs(edges: Set<SocialEdge>, s: At.DID, t: At.DID) {
 }
 
 document.querySelector("#path-go")!.addEventListener("click", async () => {
+	network_requests = 0;
+	(
+		document.querySelector("#path-reqs") as HTMLSpanElement
+	).textContent = `${network_requests}`;
+	(document.querySelector("#path-edges") as HTMLSpanElement).textContent = `0`;
+
 	const { identity: from } = await resolveFromIdentity(
 		(document.querySelector("#path-from")! as HTMLInputElement).value
 	);
@@ -168,9 +221,6 @@ document.querySelector("#path-go")!.addEventListener("click", async () => {
 	if (from && to) {
 		const edges = await bidirectionalSearch(from.id, to.id);
 		if (edges.size > 0) {
-			(
-				document.querySelector("#path-edges")! as HTMLSpanElement
-			).textContent = `${edges.size}`;
 			let nodes = new Set<At.DID>();
 			for (let edge of edges) {
 				let [x, y] = (edge as SocialEdge).split("$");

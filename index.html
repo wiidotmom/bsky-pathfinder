@@ -10,6 +10,50 @@
 		<div id="app">
 			<h1>bsky path finder</h1>
 			<p>
+				this tool uses the public bluesky api and will expose your IP address to
+				Bluesky PBC. refer to their privacy policies for any concerns you may
+				have:
+			</p>
+			<p>
+				<a
+					href="https://bsky.social/about/support/privacy-policy"
+					target="_blank"
+				>
+					Bluesky App Privacy Policy
+				</a>
+			</p>
+			<p>
+				<a
+					href="https://bsky.social/about/support/network-services-privacy-policy"
+					target="_blank"
+				>
+					Bluesky AT Protocol Network Services Privacy Notice
+				</a>
+			</p>
+			<p>
+				made with 💙 by
+				<a
+					href="https://bsky.app/profile/did:plc:f4waxes4axnbxaktb3bt44fi"
+					target="_blank"
+					>@wii.mom</a
+				>. view the source code:
+				<a href="https://github.com/wiidotmom/bsky-pathfinder" target="_blank"
+					>https://github.com/wiidotmom/bsky-pathfinder</a
+				>
+			</p>
+			<p>
+				libraries used:
+				<a href="https://github.com/mary-ext/atcute" target="" _blank>atcute</a>
+				by
+				<a
+					href="https://bsky.app/profile/did:plc:ia76kvnndjutgedggx2ibrem"
+					target="_blank"
+					>@mary.my.id</a
+				>
+				for using bsky public api,
+				<a href="https://vite.dev/" target="_blank">vite</a> for bundling
+			</p>
+			<p>
 				find me a path from at://<input
 					type="text"
 					placeholder="wii.mom"
@@ -20,9 +64,39 @@
 					placeholder="test-account.farlands.cafe"
 					id="path-to"
 				/>
+			</p>
+			<p>
+				display results with: <br />
+				<input
+					type="radio"
+					id="display-format-at"
+					name="display-format"
+					value="web+at://"
+					checked
+				/>
+				<label for="display-format-at">pdsls.dev web+at:// links</label><br />
+				<input
+					type="radio"
+					id="display-format-https"
+					name="display-format"
+					value="https://"
+				/>
+				<label for="display-format-https">bsky.app https:// links</label><br />
+				<input
+					type="radio"
+					id="display-format-label"
+					name="display-format"
+					value="none"
+				/>
+				<label for="display-format-label">just handles, no links</label><br />
+			</p>
+			<p>
 				<button id="path-go">GO!!!</button>
 			</p>
-			<p><span id="path-edges">0</span> social graph edges observed</p>
+			<p>
+				<span id="path-edges">0</span> social graph edges observed,
+				<span id="path-reqs">0</span> network requests made
+			</p>
 			<p id="path-output"></p>
 		</div>
 		<script type="module" src="/src/main.ts"></script>
