@@ -1,19 +1,20 @@
 {
-  "name": "bsky-pathfinder",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^6.0.1"
-  },
-  "dependencies": {
-    "@atcute/client": "^2.0.6",
-    "@atcute/oauth-browser-client": "^1.0.6",
-    "lexicons": "link:@atcute/bluesky/lexicons"
-  }
+	"name": "bsky-pathfinder",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"typescript": "^5.7.2",
+		"vite": "^6.0.1"
+	},
+	"dependencies": {
+		"@atcute/bluesky": "^1.0.9",
+		"@atcute/client": "^2.0.6",
+		"@atcute/oauth-browser-client": "^1.0.6"
+	}
 }

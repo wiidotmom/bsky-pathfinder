@@ -8,21 +8,29 @@ importers:
 
   .:
     dependencies:
+      '@atcute/bluesky':
+        specifier: ^1.0.9
+        version: 1.0.9(@atcute/client@2.0.6)
       '@atcute/client':
         specifier: ^2.0.6
         version: 2.0.6
       '@atcute/oauth-browser-client':
         specifier: ^1.0.6
         version: 1.0.6
-      lexicons:
-        specifier: link:@atcute/bluesky/lexicons
-        version: link:@atcute/bluesky/lexicons
     devDependencies:
+      typescript:
+        specifier: ^5.7.2
+        version: 5.7.2
       vite:
         specifier: ^6.0.1
         version: 6.0.1
 
 packages:
+
+  '@atcute/bluesky@1.0.9':
+    resolution: {integrity: sha512-06UbqlnREobZB5vVlstJXsJJVNBPr/RhauVVWQk9k8eIfzyiV9uxklc5olv+wULld+iBL6OQItnTEyZPv8QFLw==}
+    peerDependencies:
+      '@atcute/client': ^1.0.0 || ^2.0.0
 
   '@atcute/client@2.0.6':
     resolution: {integrity: sha512-mhdqEicGUx0s5HTFOLpz91rcLS9j/g63de0nmAqv7blhU3j+xBf4le54qr2YIXNfnReZI7EwLYLX/YIBez4LGA==}
@@ -303,6 +311,11 @@ packages:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
+  typescript@5.7.2:
+    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   vite@6.0.1:
     resolution: {integrity: sha512-Ldn6gorLGr4mCdFnmeAOLweJxZ34HjKnDm4HGo6P66IEqTxQb36VEdFJQENKxWjupNfoIjvRUnswjn1hpYEpjQ==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
@@ -344,6 +357,10 @@ packages:
         optional: true
 
 snapshots:
+
+  '@atcute/bluesky@1.0.9(@atcute/client@2.0.6)':
+    dependencies:
+      '@atcute/client': 2.0.6
 
   '@atcute/client@2.0.6': {}
 
@@ -547,6 +564,8 @@ snapshots:
       fsevents: 2.3.3
 
   source-map-js@1.2.1: {}
+
+  typescript@5.7.2: {}
 
   vite@6.0.1:
     dependencies:
