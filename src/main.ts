@@ -232,7 +232,7 @@ document.querySelector("#path-go")!.addEventListener("click", async () => {
 							document.querySelector("#path-output")!.innerHTML = path
 								.map(
 									(did) =>
-										`<a target="_blank" href="web+at://${didToHandle[did]}">at://${didToHandle[did]}</a>`
+										`<a target="_blank" href="web+at://${didToHandle[did]}">web+at://${didToHandle[did]}</a>`
 								)
 								.join(" 🡒 ");
 							break;
