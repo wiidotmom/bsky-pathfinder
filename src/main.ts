@@ -98,6 +98,7 @@ async function bidirectionalSearch(
 	let edges: Set<SocialEdge> = new Set();
 
 	while (queueStart.length > 0 && queueEnd.length > 0) {
+		let found = false;
 		let currentStart = queueStart.shift()!;
 		for (let neighbor of await getFollows(currentStart)) {
 			if (!visitedStart.has(neighbor)) {
@@ -106,10 +107,7 @@ async function bidirectionalSearch(
 				edges.add(`${currentStart}$${neighbor}`);
 			}
 			if (visitedEnd.has(neighbor)) {
-				(
-					document.querySelector("#path-edges") as HTMLSpanElement
-				).textContent = `${edges.size}`;
-				return edges;
+				found = true;
 			}
 		}
 		(
@@ -123,15 +121,13 @@ async function bidirectionalSearch(
 				edges.add(`${neighbor}$${currentEnd}`);
 			}
 			if (visitedStart.has(neighbor)) {
-				(
-					document.querySelector("#path-edges") as HTMLSpanElement
-				).textContent = `${edges.size}`;
-				return edges;
+				found = true;
 			}
 		}
 		(
 			document.querySelector("#path-edges") as HTMLSpanElement
 		).textContent = `${edges.size}`;
+		if (found) return edges;
 	}
 
 	return new Set();
@@ -212,7 +208,8 @@ document.querySelector("#path-go")!.addEventListener("click", async () => {
 					nodes.add(x as At.DID);
 					nodes.add(y as At.DID);
 				}
-				console.log("hey girl");
+				console.log(edges);
+				console.log(edges.has(`${from.id}$${to.id}`));
 				let path = await djikstra(nodes, edges, from.id, to.id);
 				if (path.length > 1) {
 					const format_type = (
