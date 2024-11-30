@@ -147,43 +147,42 @@ async function djikstra(
 ): Promise<At.DID[]> {
 	let dist: { [key: At.DID]: number } = {};
 	let prev: { [key: At.DID]: At.DID } = {};
+	let visited: Set<At.DID> = new Set();
 	let q: At.DID[] = [];
 	for (let node of nodes) {
 		dist[node] = Number.MAX_VALUE;
-		q.push(node);
 	}
 	dist[s] = 0;
-	while (q.length) {
+	q.push(s);
+
+	while (q.length && !visited.has(t)) {
 		q.sort((a, b) => dist[a] - dist[b]);
 		let u = q.pop()!;
-
-		if (u == t) {
-			let path: At.DID[] = [u];
-			if (prev[u]) {
-				while (u != s) {
-					u = prev[u];
-					path.push(u);
-				}
-			}
-			path.push(s);
-			path.reverse();
-			return path;
-		}
+		if (visited.has(u)) continue;
+		visited.add(u);
 
 		let neighbors: At.DID[] = Array.from(edges.entries())
 			.map((y) => y[0])
 			.filter((y) => y.startsWith(u))
-			.map((y) => y.split("$")[1] as At.DID)
-			.filter((y) => y in q);
+			.map((y) => y.split("$")[1] as At.DID);
 		for (let v of neighbors) {
-			let alt = dist[u] + 1;
-			if (alt < dist[v]) {
-				dist[v] = alt;
+			if (dist[v] > dist[u] + 1) {
+				dist[v] = dist[u] + 1;
+				q.push(v);
 				prev[v] = u;
 			}
 		}
 	}
-	return [];
+
+	let path: At.DID[] = [];
+	path.push(t);
+	let u = t;
+	while (u != s) {
+		u = prev[u];
+		path.push(u);
+	}
+	path.reverse();
+	return path;
 }
 
 document.querySelector("#path-go")!.addEventListener("click", async () => {
