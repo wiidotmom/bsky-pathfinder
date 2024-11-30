@@ -139,72 +139,51 @@ async function bidirectionalSearch(
 
 type SocialEdge = `${At.DID}$${At.DID}`;
 
-async function bfs(edges: Set<SocialEdge>, s: At.DID, t: At.DID) {
-	if (s == t) return [s, t];
-	let visited = new Set();
-	const queue = [s];
-	visited.add(s);
+async function djikstra(
+	nodes: Set<At.DID>,
+	edges: Set<SocialEdge>,
+	s: At.DID,
+	t: At.DID
+): Promise<At.DID[]> {
+	let dist: { [key: At.DID]: number } = {};
 	let prev: { [key: At.DID]: At.DID } = {};
-	while (queue.length) {
-		let u = queue.pop()!;
+	let q: At.DID[] = [];
+	for (let node of nodes) {
+		dist[node] = Number.MAX_VALUE;
+		q.push(node);
+	}
+	dist[s] = 0;
+	while (q.length) {
+		q.sort((a, b) => dist[a] - dist[b]);
+		let u = q.pop()!;
+
+		if (u == t) {
+			let path: At.DID[] = [u];
+			if (prev[u]) {
+				while (u != s) {
+					u = prev[u];
+					path.push(u);
+				}
+			}
+			path.push(s);
+			path.reverse();
+			return path;
+		}
+
 		let neighbors: At.DID[] = Array.from(edges.entries())
 			.map((y) => y[0])
 			.filter((y) => y.startsWith(u))
-			.map((y) => y.split("$")[1] as At.DID);
+			.map((y) => y.split("$")[1] as At.DID)
+			.filter((y) => y in q);
 		for (let v of neighbors) {
-			if (visited.has(v)) continue;
-			visited.add(v);
-			if (v === t) {
-				var path = [v];
-				while (u !== s) {
-					path.push(u);
-					u = prev[u];
-				}
-				path.push(u);
-				path.reverse();
-				const format_type = (
-					document.querySelector("#display-format-at")! as HTMLInputElement
-				).checked
-					? "web+at"
-					: (
-							document.querySelector(
-								"#display-format-https"
-							)! as HTMLInputElement
-					  ).checked
-					? "https"
-					: "none";
-				switch (format_type) {
-					case "web+at": {
-						document.querySelector("#path-output")!.innerHTML = path
-							.map(
-								(did) =>
-									`<a target="_blank" href="web+at://${didToHandle[did]}">at://${didToHandle[did]}</a>`
-							)
-							.join(" -> ");
-						break;
-					}
-					case "https": {
-						document.querySelector("#path-output")!.innerHTML = path
-							.map(
-								(did) =>
-									`<a target="_blank" href="https://bsky.app/profile/${didToHandle[did]}">@${didToHandle[did]}</a>`
-							)
-							.join(" -> ");
-						break;
-					}
-					default: {
-						document.querySelector("#path-output")!.innerHTML = path
-							.map((did) => `@${didToHandle[did]}`)
-							.join(" -> ");
-						break;
-					}
-				}
-				return;
+			let alt = dist[u] + 1;
+			if (alt < dist[v]) {
+				dist[v] = alt;
+				prev[v] = u;
 			}
-			prev[v] = u;
-			queue.push(v);
 		}
 	}
+	return [];
 }
 
 document.querySelector("#path-go")!.addEventListener("click", async () => {
@@ -227,13 +206,63 @@ document.querySelector("#path-go")!.addEventListener("click", async () => {
 	if (from && to) {
 		const edges = await bidirectionalSearch(from.id, to.id);
 		if (edges.size > 0) {
-			let nodes = new Set<At.DID>();
-			for (let edge of edges) {
-				let [x, y] = (edge as SocialEdge).split("$");
-				nodes.add(x as At.DID);
-				nodes.add(y as At.DID);
+			try {
+				let nodes = new Set<At.DID>();
+				for (let edge of edges) {
+					let [x, y] = (edge as SocialEdge).split("$");
+					nodes.add(x as At.DID);
+					nodes.add(y as At.DID);
+				}
+				console.log("hey girl");
+				let path = await djikstra(nodes, edges, from.id, to.id);
+				if (path.length > 1) {
+					const format_type = (
+						document.querySelector("#display-format-at")! as HTMLInputElement
+					).checked
+						? "web+at"
+						: (
+								document.querySelector(
+									"#display-format-https"
+								)! as HTMLInputElement
+						  ).checked
+						? "https"
+						: "none";
+					switch (format_type) {
+						case "web+at": {
+							document.querySelector("#path-output")!.innerHTML = path
+								.map(
+									(did) =>
+										`<a target="_blank" href="web+at://${didToHandle[did]}">at://${didToHandle[did]}</a>`
+								)
+								.join(" -> ");
+							break;
+						}
+						case "https": {
+							document.querySelector("#path-output")!.innerHTML = path
+								.map(
+									(did) =>
+										`<a target="_blank" href="https://bsky.app/profile/${didToHandle[did]}">@${didToHandle[did]}</a>`
+								)
+								.join(" -> ");
+							break;
+						}
+						default: {
+							document.querySelector("#path-output")!.innerHTML = path
+								.map((did) => `@${didToHandle[did]}`)
+								.join(" -> ");
+							break;
+						}
+					}
+				} else {
+					(
+						document.querySelector("#path-output")! as HTMLSpanElement
+					).textContent = "Path not found";
+				}
+			} catch (err: any) {
+				(
+					document.querySelector("#path-output")! as HTMLSpanElement
+				).textContent = err.toString();
 			}
-			bfs(edges, from.id, to.id);
 		} else {
 			(document.querySelector("#path-output")! as HTMLSpanElement).textContent =
 				"Path not found";
