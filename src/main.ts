@@ -106,6 +106,9 @@ async function bidirectionalSearch(
 				edges.add(`${currentStart}$${neighbor}`);
 			}
 			if (visitedEnd.has(neighbor)) {
+				(
+					document.querySelector("#path-edges") as HTMLSpanElement
+				).textContent = `${edges.size}`;
 				return edges;
 			}
 		}
@@ -120,6 +123,9 @@ async function bidirectionalSearch(
 				edges.add(`${neighbor}$${currentEnd}`);
 			}
 			if (visitedStart.has(neighbor)) {
+				(
+					document.querySelector("#path-edges") as HTMLSpanElement
+				).textContent = `${edges.size}`;
 				return edges;
 			}
 		}
