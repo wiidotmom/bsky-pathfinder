@@ -234,7 +234,7 @@ document.querySelector("#path-go")!.addEventListener("click", async () => {
 									(did) =>
 										`<a target="_blank" href="web+at://${didToHandle[did]}">at://${didToHandle[did]}</a>`
 								)
-								.join(" -> ");
+								.join(" 🡒 ");
 							break;
 						}
 						case "https": {
@@ -243,13 +243,13 @@ document.querySelector("#path-go")!.addEventListener("click", async () => {
 									(did) =>
 										`<a target="_blank" href="https://bsky.app/profile/${didToHandle[did]}">@${didToHandle[did]}</a>`
 								)
-								.join(" -> ");
+								.join(" 🡒 ");
 							break;
 						}
 						default: {
 							document.querySelector("#path-output")!.innerHTML = path
 								.map((did) => `@${didToHandle[did]}`)
-								.join(" -> ");
+								.join(" 🡒 ");
 							break;
 						}
 					}
