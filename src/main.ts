@@ -104,28 +104,28 @@ async function bidirectionalSearch(
 				queueStart.push(neighbor);
 				visitedStart.add(neighbor);
 				edges.add(`${currentStart}$${neighbor}`);
-				(
-					document.querySelector("#path-edges") as HTMLSpanElement
-				).textContent = `${edges.size}`;
 			}
 			if (visitedEnd.has(neighbor)) {
 				return edges;
 			}
 		}
+		(
+			document.querySelector("#path-edges") as HTMLSpanElement
+		).textContent = `${edges.size}`;
 		let currentEnd = queueEnd.shift()!;
 		for (let neighbor of await getFollowers(currentEnd)) {
 			if (!visitedEnd.has(neighbor)) {
 				queueEnd.push(neighbor);
 				visitedEnd.add(neighbor);
 				edges.add(`${neighbor}$${currentEnd}`);
-				(
-					document.querySelector("#path-edges") as HTMLSpanElement
-				).textContent = `${edges.size}`;
 			}
 			if (visitedStart.has(neighbor)) {
 				return edges;
 			}
 		}
+		(
+			document.querySelector("#path-edges") as HTMLSpanElement
+		).textContent = `${edges.size}`;
 	}
 
 	return new Set();
