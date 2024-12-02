@@ -18,7 +18,7 @@ let network_requests: string[] = [];
 
 function updateNetworkReqDetails() {
 	document.querySelector("#path-reqs-details")!.innerHTML =
-		`<summary>network request details</summary>\n` +
+		`<summary>network request details (for more info, check your browser's network tab)</summary>\n` +
 		network_requests.join("<br>");
 }
 
