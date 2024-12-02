@@ -14,11 +14,18 @@ const rpc = new XRPC({ handler });
 
 let didToHandle: { [key: At.DID]: string } = {};
 
-let network_requests = 0;
+let network_requests: string[] = [];
+
+function updateNetworkReqDetails() {
+	document.querySelector("#path-reqs-details")!.innerHTML =
+		`<summary>network request details</summary>\n` +
+		network_requests.join("<br>");
+}
 
 async function getFollows(actor: At.DID) {
 	let follows: At.DID[] = [];
 	let prev_fetched = 100;
+	let total_fetched = 0;
 	let cursor = undefined;
 
 	while (prev_fetched == 100) {
@@ -32,10 +39,6 @@ async function getFollows(actor: At.DID) {
 				},
 			}
 		);
-		network_requests++;
-		(
-			document.querySelector("#path-reqs") as HTMLSpanElement
-		).textContent = `${network_requests}`;
 
 		data.follows.forEach((x) => {
 			follows.push(x.did);
@@ -43,6 +46,18 @@ async function getFollows(actor: At.DID) {
 		});
 
 		prev_fetched = data.follows.length;
+		total_fetched += prev_fetched;
+
+		network_requests.push(
+			`${didToHandle[actor]}'s follows (${total_fetched}/${
+				prev_fetched == 100 ? "?" : total_fetched
+			} observed)`
+		);
+		(
+			document.querySelector("#path-reqs") as HTMLSpanElement
+		).textContent = `${network_requests.length}`;
+		updateNetworkReqDetails();
+
 		cursor = data.cursor;
 		await sleep(10);
 	}
@@ -53,6 +68,7 @@ async function getFollows(actor: At.DID) {
 async function getFollowers(actor: At.DID) {
 	let followers: At.DID[] = [];
 	let prev_fetched = 100;
+	let total_fetched = 0;
 	let cursor = undefined;
 
 	while (prev_fetched == 100) {
@@ -65,17 +81,24 @@ async function getFollowers(actor: At.DID) {
 				},
 			});
 
-		network_requests++;
-		(
-			document.querySelector("#path-reqs") as HTMLSpanElement
-		).textContent = `${network_requests}`;
-
 		data.followers.forEach((x) => {
 			followers.push(x.did);
 			didToHandle[x.did] = x.handle;
 		});
 
 		prev_fetched = data.followers.length;
+		total_fetched += prev_fetched;
+
+		network_requests.push(
+			`${didToHandle[actor]}'s followers (${total_fetched}/${
+				prev_fetched == 100 ? "?" : total_fetched
+			} observed)`
+		);
+		(
+			document.querySelector("#path-reqs") as HTMLSpanElement
+		).textContent = `${network_requests.length}`;
+		updateNetworkReqDetails();
+
 		cursor = data.cursor;
 		await sleep(10);
 	}
@@ -182,10 +205,11 @@ async function djikstra(
 }
 
 document.querySelector("#path-go")!.addEventListener("click", async () => {
-	network_requests = 0;
+	network_requests = [];
 	(
 		document.querySelector("#path-reqs") as HTMLSpanElement
-	).textContent = `${network_requests}`;
+	).textContent = `${network_requests.length}`;
+	updateNetworkReqDetails();
 	(document.querySelector("#path-edges") as HTMLSpanElement).textContent = `0`;
 
 	const { identity: from } = await resolveFromIdentity(
